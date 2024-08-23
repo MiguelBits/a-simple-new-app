@@ -42,7 +42,7 @@ const Swapper = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const { simulateAndWrite } = useSimulateAndWriteContract();
 	const { simulateAndRead } = useSimulateAndReadContract();
-    
+	const [isButtonHovered, setIsButtonHovered] = useState(false);
 
 	const toast = useToast();
 
@@ -190,7 +190,11 @@ const Swapper = () => {
 
 	return (
 		<div className="flex flex-wrap md:flex-nowrap gap-4 ">
-			<div className="p-8 space-y-2 rounded-md max-w-lg justify-center items-center bg-gradient-to-tr from-green-500 to-green-700 hover:from-red-500 hover:to-red-700 transition-colors duration-300 text-white shadow-lg">
+			<div className={`p-8 space-y-2 rounded-md max-w-lg justify-center items-center text-white shadow-lg transition-colors duration-300 ${
+        isButtonHovered
+          ? 'bg-red-500'
+          : 'bg-gradient-to-tr from-green-500 to-green-700'
+      }`}>
 				<Input
 					disabled={!isConnected}
 					label="Token In Address"
@@ -226,6 +230,8 @@ const Swapper = () => {
 					onClick={handleSwap}
 					isLoading={isSubmitting}
 					disabled={!isConnected}
+					onMouseEnter={() => setIsButtonHovered(true)}
+					onMouseLeave={() => setIsButtonHovered(false)}
 				>
 					{isConnected
 						? isSubmitting
