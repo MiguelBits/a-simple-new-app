@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useAccount, useBlock } from "wagmi";
 import { ethers } from "ethers";
 import {
@@ -44,6 +44,9 @@ const Swapper = () => {
 	const { simulateAndWrite } = useSimulateAndWriteContract();
 	const { simulateAndRead } = useSimulateAndReadContract();
 	const [isButtonHovered, setIsButtonHovered] = useState(false);
+	const [position, setPosition] = useState({ x: 0, y: 0 });
+	const [screenSection, setScreenSection] = useState("center");
+	const containerRef = useRef<HTMLDivElement>(null);
 
 	const toast = useToast();
 
@@ -189,18 +192,64 @@ const Swapper = () => {
 		}
 	};
 
+	const handleDrag = (e: any, data: { x: number; y: number }) => {
+		setPosition({ x: data.x, y: data.y });
+	};
+
+	useEffect(() => {
+		const checkPosition = () => {
+			if (containerRef.current) {
+				const containerRect = containerRef.current.getBoundingClientRect();
+				const containerCenter = containerRect.left + containerRect.width / 2;
+				const windowWidth = window.innerWidth;
+				const leftThreshold = windowWidth / 3;
+				const rightThreshold = (windowWidth / 3) * 2;
+
+				let newScreenSection;
+				if (containerCenter < leftThreshold) {
+					newScreenSection = "left";
+				} else if (containerCenter > rightThreshold) {
+					newScreenSection = "right";
+				} else {
+					newScreenSection = "center";
+				}
+
+				setScreenSection(newScreenSection);
+
+				// Debug logging
+				console.log('Container center:', containerCenter);
+				console.log('Window width:', windowWidth);
+				console.log('Screen section:', newScreenSection);
+			}
+		};
+
+		checkPosition();
+		window.addEventListener('resize', checkPosition);
+
+		return () => window.removeEventListener('resize', checkPosition);
+	}, [position]);
+
 	return (
 		<Draggable
 			handle=".drag-handle"
 			defaultPosition={{x: 0, y: 0}}
 			position={undefined}
-			scale={0.85}
+			scale={0.5}
 			bounds="parent"
+			onDrag={handleDrag}
 		>
-			<div className="absolute flex flex-wrap md:flex-nowrap gap-4">
+			<div 
+				ref={containerRef}
+				className="absolute flex flex-wrap md:flex-nowrap gap-4"
+				style={{
+					backgroundImage: screenSection === "right" ? "url('/images/DALL·E 2024-08-23 16.07.10 - A vibrant background image with a warm, glowing gradient featuring shades of orange, red, and yellow, inspired by the 'Tinder flames' aesthetic. The d.webp')" : 'none',
+					backgroundSize: 'cover',
+					backgroundPosition: 'center',
+				}}
+			>
 				<div className={`p-8 space-y-2 rounded-md max-w-lg justify-center items-center text-white shadow-lg transition-colors duration-300 ${
-					isButtonHovered
-						? 'bg-red-500'
+					screenSection === "right" 
+						? 'bg-transparent'
 						: 'bg-gradient-to-tr from-green-500 to-green-700'
 				}`}>
 					<div className="drag-handle cursor-move mb-4 text-center font-bold">
