@@ -248,16 +248,6 @@ const Swapper = () => {
 			<div 
 				ref={containerRef}
 				className={`absolute flex flex-wrap md:flex-nowrap gap-4 ${isDragging ? 'cursor-none' : ''}`}
-				style={{
-					backgroundImage: 
-						screenSection === "right" 
-							? "url('/images/DALL·E 2024-08-23 16.07.10 - A vibrant background image with a warm, glowing gradient featuring shades of orange, red, and yellow, inspired by the 'Tinder flames' aesthetic. The d.webp')"
-							: screenSection === "left"
-								? "url('/images/left-background.webp')" // Replace with your left side background image
-								: 'none',
-					backgroundSize: 'cover',
-					backgroundPosition: 'center',
-				}}
 			>
 				<div className={`p-8 space-y-2 rounded-md max-w-lg justify-center items-center shadow-lg transition-colors duration-300 ${
 					screenSection === "right" 
