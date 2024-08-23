@@ -190,7 +190,7 @@ const Swapper = () => {
 
 	return (
 		<div className="flex flex-wrap md:flex-nowrap gap-4 ">
-			<div className="p-8 space-y-2 rounded-md max-w-lg  justify-center items-center bg-gradient-to-tr from-pink-500 to-yellow-500 text-white shadow-lg">
+			<div className="p-8 space-y-2 rounded-md max-w-lg justify-center items-center bg-gradient-to-tr from-green-500 to-green-700 hover:from-red-500 hover:to-red-700 transition-colors duration-300 text-white shadow-lg">
 				<Input
 					disabled={!isConnected}
 					label="Token In Address"
