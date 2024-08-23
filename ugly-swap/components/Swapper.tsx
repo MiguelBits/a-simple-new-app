@@ -47,6 +47,7 @@ const Swapper = () => {
 	const [position, setPosition] = useState({ x: 0, y: 0 });
 	const [screenSection, setScreenSection] = useState("center");
 	const containerRef = useRef<HTMLDivElement>(null);
+	const [isDragging, setIsDragging] = useState(false);
 
 	const toast = useToast();
 
@@ -194,6 +195,11 @@ const Swapper = () => {
 
 	const handleDrag = (e: any, data: { x: number; y: number }) => {
 		setPosition({ x: data.x, y: data.y });
+		setIsDragging(true);
+	};
+
+	const handleDragStop = () => {
+		setIsDragging(false);
 	};
 
 	useEffect(() => {
@@ -234,23 +240,31 @@ const Swapper = () => {
 			handle=".drag-handle"
 			defaultPosition={{x: 0, y: 0}}
 			position={undefined}
-			scale={0.5}
+			scale={0.85}
 			bounds="parent"
 			onDrag={handleDrag}
+			onStop={handleDragStop}
 		>
 			<div 
 				ref={containerRef}
-				className="absolute flex flex-wrap md:flex-nowrap gap-4"
+				className={`absolute flex flex-wrap md:flex-nowrap gap-4 ${isDragging ? 'cursor-none' : ''}`}
 				style={{
-					backgroundImage: screenSection === "right" ? "url('/images/DALL·E 2024-08-23 16.07.10 - A vibrant background image with a warm, glowing gradient featuring shades of orange, red, and yellow, inspired by the 'Tinder flames' aesthetic. The d.webp')" : 'none',
+					backgroundImage: 
+						screenSection === "right" 
+							? "url('/images/DALL·E 2024-08-23 16.07.10 - A vibrant background image with a warm, glowing gradient featuring shades of orange, red, and yellow, inspired by the 'Tinder flames' aesthetic. The d.webp')"
+							: screenSection === "left"
+								? "url('/images/left-background.webp')" // Replace with your left side background image
+								: 'none',
 					backgroundSize: 'cover',
 					backgroundPosition: 'center',
 				}}
 			>
-				<div className={`p-8 space-y-2 rounded-md max-w-lg justify-center items-center text-white shadow-lg transition-colors duration-300 ${
+				<div className={`p-8 space-y-2 rounded-md max-w-lg justify-center items-center shadow-lg transition-colors duration-300 ${
 					screenSection === "right" 
-						? 'bg-transparent'
-						: 'bg-gradient-to-tr from-green-500 to-green-700'
+						? 'bg-black bg-opacity-50 text-white'
+						: screenSection === "left"
+							? 'bg-white bg-opacity-50 text-black' // Semi-transparent white background with black text for left side
+							: 'bg-gradient-to-tr from-green-500 to-green-700 text-white'
 				}`}>
 					<div className="drag-handle cursor-move mb-4 text-center font-bold">
 						Drag here to move
