@@ -10,6 +10,7 @@ import IUniswapV2Router02 from "@uniswap/v2-periphery/build/IUniswapV2Router02.j
 import { erc20Abi } from "viem";
 import useSimulateAndWriteContract from "../hooks/simulateAndWriteContract";
 import useSimulateAndReadContract from "../hooks/simulateAndReadContract";
+import Draggable from "react-draggable";
 
 import { useToast } from "@chakra-ui/react";
 import {
@@ -189,72 +190,83 @@ const Swapper = () => {
 	};
 
 	return (
-		<div className="flex flex-wrap md:flex-nowrap gap-4 ">
-			<div className={`p-8 space-y-2 rounded-md max-w-lg justify-center items-center text-white shadow-lg transition-colors duration-300 ${
-        isButtonHovered
-          ? 'bg-red-500'
-          : 'bg-gradient-to-tr from-green-500 to-green-700'
-      }`}>
-				<Input
-					disabled={!isConnected}
-					label="Token In Address"
-					placeholder="Enter Token In Address"
-					value={tokenInAddress}
-					onChange={(e) =>
-						setTokenInAddress(ensure0xPrefix(e.target.value) as `0x${string}`)
-					}
-				/>
-				<Input
-					disabled={!isConnected}
-					fullWidth
-					label="Token Out Address"
-					placeholder="Enter Token Out Address"
-					value={tokenOutAddress}
-					onChange={(e) =>
-						setTokenOutAddress(ensure0xPrefix(e.target.value) as `0x${string}`)
-					}
-				/>
-				<Input
-					disabled={!isConnected}
-					fullWidth
-					label="Amount In"
-					placeholder="Enter Amount In"
-					value={amountIn}
-					onChange={(e) => setAmountIn(e.target.value)}
-				/>
-				<Spacer y={1} />
-				<Button
-					color="primary"
-					variant={isConnected ? "solid" : "light"}
-					fullWidth
-					onClick={handleSwap}
-					isLoading={isSubmitting}
-					disabled={!isConnected}
-					onMouseEnter={() => setIsButtonHovered(true)}
-					onMouseLeave={() => setIsButtonHovered(false)}
-				>
-					{isConnected
-						? isSubmitting
-							? "Swapping..."
-							: "Swap Tokens"
-						: "Please Connect your wallet"}
-				</Button>
+		<Draggable
+			handle=".drag-handle"
+			defaultPosition={{x: 0, y: 0}}
+			position={undefined}
+			scale={0.85}
+			bounds="parent"
+		>
+			<div className="absolute flex flex-wrap md:flex-nowrap gap-4">
+				<div className={`p-8 space-y-2 rounded-md max-w-lg justify-center items-center text-white shadow-lg transition-colors duration-300 ${
+					isButtonHovered
+						? 'bg-red-500'
+						: 'bg-gradient-to-tr from-green-500 to-green-700'
+				}`}>
+					<div className="drag-handle cursor-move mb-4 text-center font-bold">
+						Drag here to move
+					</div>
+					<Input
+						disabled={!isConnected}
+						label="Token In Address"
+						placeholder="Enter Token In Address"
+						value={tokenInAddress}
+						onChange={(e) =>
+							setTokenInAddress(ensure0xPrefix(e.target.value) as `0x${string}`)
+						}
+					/>
+					<Input
+						disabled={!isConnected}
+						fullWidth
+						label="Token Out Address"
+						placeholder="Enter Token Out Address"
+						value={tokenOutAddress}
+						onChange={(e) =>
+							setTokenOutAddress(ensure0xPrefix(e.target.value) as `0x${string}`)
+						}
+					/>
+					<Input
+						disabled={!isConnected}
+						fullWidth
+						label="Amount In"
+						placeholder="Enter Amount In"
+						value={amountIn}
+						onChange={(e) => setAmountIn(e.target.value)}
+					/>
+					<Spacer y={1} />
+					<Button
+						color="primary"
+						variant={isConnected ? "solid" : "light"}
+						fullWidth
+						onClick={handleSwap}
+						isLoading={isSubmitting}
+						disabled={!isConnected}
+						onMouseEnter={() => setIsButtonHovered(true)}
+						onMouseLeave={() => setIsButtonHovered(false)}
+					>
+						{isConnected
+							? isSubmitting
+								? "Swapping..."
+								: "Swap Tokens"
+							: "Please Connect your wallet"}
+					</Button>
 
-				<Modal isOpen={isOpen} onClose={onClose}>
-					<ModalContent>
-						<ModalHeader>Swap Result</ModalHeader>
-						<ModalBody>
-							<p>{swapResult}</p>
-							<p>ApproveHash: {approveHash}</p>
-							<p>SwapHash: {swapHash}</p>
-						</ModalBody>
-						<ModalFooter>
-							<Button onClick={onClose}>Close</Button>
-						</ModalFooter>
-					</ModalContent>
-				</Modal>
+					<Modal isOpen={isOpen} onClose={onClose}>
+						<ModalContent>
+							<ModalHeader>Swap Result</ModalHeader>
+							<ModalBody>
+								<p>{swapResult}</p>
+								<p>ApproveHash: {approveHash}</p>
+								<p>SwapHash: {swapHash}</p>
+							</ModalBody>
+							<ModalFooter>
+								<Button onClick={onClose}>Close</Button>
+							</ModalFooter>
+						</ModalContent>
+					</Modal>
+				</div>
 			</div>
-		</div>
+		</Draggable>
 	);
 };
 
